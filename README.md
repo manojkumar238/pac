@@ -1,1 +1,2 @@
 # pac -testing
+$check -test
