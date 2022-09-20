@@ -77,7 +77,9 @@ spec:
           name: golang-test
         params:
           - name: package
-            value: "github.com/openshift/tektoncd-operator"
+            value: "github.com/tektoncd/pipeline"
+          - name: packages
+            value: ./pkg/...
         workspaces:
           - name: source
             workspace: source
