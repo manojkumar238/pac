@@ -84,7 +84,7 @@ spec:
             workspace: source
       - name: unittest
         runAfter: 
-          - test
+          - noop-task
         workspaces:
           - name: source
             workspace: source
@@ -98,7 +98,7 @@ spec:
               script: |
                  #!/usr/bin/env bash
                  set -eux
-                 export SYSTEM_NAMESPACE="tekton-pipelines"
+                 export SYSTEM_NAMESPACE="openshift-pipelines"
                  export TEST_RUNTIME_ARCH="s390x"
                  go test -v -count=1 -tags=e2e -timeout=20m ./test
   workspaces:
