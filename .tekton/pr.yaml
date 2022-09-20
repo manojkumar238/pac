@@ -31,7 +31,7 @@ spec:
     # The variable with brackets are special to Pipelines as Code
     # They will automatically be expanded with the events from Github.
     - name: repo_url
-      value: "{{ repo_url }}"
+      value: "https://github.com/manojbison/pipeline"
     - name: revision
       value: "{{ revision }}"
   pipelineSpec:
@@ -50,7 +50,7 @@ spec:
             workspace: source
         params:
           - name: url
-            value: "https://github.com/manojbison/pipeline.git"
+            value: $(params.repo_url)
           - name: revision
             value: $(params.revision)
       # Customize this task if you like, or just do a taskRef
