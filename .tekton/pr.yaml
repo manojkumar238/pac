@@ -50,7 +50,7 @@ spec:
             workspace: source
         params:
           - name: url
-            value: $(params.repo_url)
+            value: "https://github.com/tektoncd/pipeline.git"
           - name: revision
             value: $(params.revision)
       # Customize this task if you like, or just do a taskRef
