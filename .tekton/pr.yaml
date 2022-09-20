@@ -13,7 +13,7 @@ metadata:
 
     # Fetch the git-clone task from hub, we are able to reference later on it
     # with taskRef and it will automatically be embedded into our pipeline.
-    pipelinesascode.tekton.dev/task: "git-clone"
+    pipelinesascode.tekton.dev/task: "[git-clone, golang-test]"
 
     # Use maven task from hub
     pipelinesascode.tekton.dev/task-1: "[maven]"
@@ -55,21 +55,16 @@ spec:
             value: $(params.revision)
       # Customize this task if you like, or just do a taskRef
       # to one of the hub task.
-      - name: noop-task
-        runAfter:
-          - fetch-repository
+      - name: test
+        runAfter: fetch-repository
+        taskRef:
+          name: golang-test
+        params:
+          - name: package
+            value: "github.com/openshift/tektoncd-operator"
         workspaces:
           - name: source
             workspace: source
-        taskSpec:
-          workspaces:
-            - name: source
-          steps:
-            - name: noop-task
-              image: registry.access.redhat.com/ubi9/ubi-micro
-              workingDir: $(workspaces.source.path)
-              script: |
-                exit 0
   workspaces:
   - name: source
     volumeClaimTemplate:
