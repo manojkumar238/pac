@@ -80,6 +80,8 @@ spec:
             value: "github.com/tektoncd/pipeline"
           - name: packages
             value: ./pkg/...
+          - name: GOARCH
+            value: "s390x"
         workspaces:
           - name: source
             workspace: source
