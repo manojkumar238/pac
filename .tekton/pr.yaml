@@ -79,9 +79,11 @@ spec:
           - name: package
             value: "github.com/tektoncd/pipeline"
           - name: packages
-            value: ./pkg/...
+            value: "./test"
           - name: GOARCH
             value: "s390x"
+          - name: flags
+            value: "-v -count=1 -tags=e2e -timeout=20m"
         workspaces:
           - name: source
             workspace: source
