@@ -74,7 +74,7 @@ spec:
           - name: package
             value: "github.com/manojbison/pipeline"
           - name: packages
-            value: "./test -run ^TestYamls"
+            value: "./test -run ^TestTaskRun"
           - name: GOARCH
             value: "s390x"
           - name: flags
