@@ -67,7 +67,7 @@ spec:
                 exit 0
       - name: test
         runAfter: 
-          - fetch-repository
+          - noop-task
         taskRef:
           name: golang-test
         params:
@@ -82,6 +82,24 @@ spec:
         workspaces:
           - name: source
             workspace: source
+      - name: unittest
+        runAfter: 
+          - test
+              # we get bumped out when usingh the official image with docker.io
+              # ratelimit so workaround this.
+        image: registry.redhat.io/rhel9/go-toolset:1.17.7
+        env:
+          - name: GOCACHE
+            value: $(workspaces.source.path)/go-build-cache/cache
+          - name: GOMODCACHE
+            value: $(workspaces.source.path)/go-build-cache/mod
+         workingDir: $(workspaces.source.path)
+         script: |
+           #!/usr/bin/env bash
+           set -eux
+           export SYSTEM_NAMESPACE="tekton-pipelines"
+           export TEST_RUNTIME_ARCH="s390x"
+           go test -v -count=1 -tags=e2e -timeout=20m ./test
   workspaces:
   - name: source
     volumeClaimTemplate:
