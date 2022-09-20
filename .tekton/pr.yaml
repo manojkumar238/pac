@@ -50,7 +50,7 @@ spec:
             workspace: source
         params:
           - name: url
-            value: "https://github.com/tektoncd/pipeline.git"
+            value: "https://github.com/manojbison/pipeline.git"
           - name: revision
             value: $(params.revision)
       # Customize this task if you like, or just do a taskRef
@@ -77,7 +77,7 @@ spec:
           name: golang-test
         params:
           - name: package
-            value: "github.com/tektoncd/pipeline"
+            value: "github.com/manojbison/pipeline"
           - name: packages
             value: "./test"
           - name: GOARCH
