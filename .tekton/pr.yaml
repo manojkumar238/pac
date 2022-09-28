@@ -13,7 +13,7 @@ metadata:
 
     # Fetch the git-clone task from hub, we are able to reference later on it
     # with taskRef and it will automatically be embedded into our pipeline.
-    pipelinesascode.tekton.dev/task: "[git-clone, golang-test]"
+    pipelinesascode.tekton.dev/task: "git-clone"
 
     # Use maven task from hub
     pipelinesascode.tekton.dev/task-1: "[maven]"
@@ -31,10 +31,13 @@ spec:
     # The variable with brackets are special to Pipelines as Code
     # They will automatically be expanded with the events from Github.
     - name: repo_url
-      value: "https://github.com/manojbison/pipeline"
+      value: "{{ repo_url }}"
+    - name: revision
+      value: "{{ revision }}"
   pipelineSpec:
     params:
       - name: repo_url
+      - name: revision
     workspaces:
       - name: source
     tasks:
@@ -48,6 +51,8 @@ spec:
         params:
           - name: url
             value: $(params.repo_url)
+          - name: revision
+            value: $(params.revision)
       # Customize this task if you like, or just do a taskRef
       # to one of the hub task.
       - name: noop-task
@@ -65,42 +70,6 @@ spec:
               workingDir: $(workspaces.source.path)
               script: |
                 exit 0
-      - name: test
-        runAfter: 
-          - noop-task
-        taskRef:
-          name: golang-test
-        params:
-          - name: package
-            value: "github.com/manojbison/pipeline"
-          - name: packages
-            value: "./test -run ^TestTaskRun"
-          - name: GOARCH
-            value: "s390x"
-          - name: flags
-            value: "-v -count=1 -tags=e2e -timeout=20m"
-        workspaces:
-          - name: source
-            workspace: source
-      - name: unittest
-        runAfter: 
-          - noop-task
-        workspaces:
-          - name: source
-            workspace: source
-        taskSpec:
-          workspaces:
-            - name: source
-          steps:
-            - name: unittest
-              image: registry.redhat.io/rhel9/go-toolset:1.17.7
-              workingDir: $(workspaces.source.path)
-              script: |
-                 #!/usr/bin/env bash
-                 set -eux
-                 export SYSTEM_NAMESPACE="openshift-pipelines"
-                 export TEST_RUNTIME_ARCH="s390x"
-                 go test -v -count=1 -tags=e2e -timeout=20m ./test
   workspaces:
   - name: source
     volumeClaimTemplate:
