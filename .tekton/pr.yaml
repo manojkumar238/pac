@@ -27,6 +27,21 @@ metadata:
     # How many runs we want to keep attached to this event
     pipelinesascode.tekton.dev/max-keep-runs: "5"
 spec:
+  finally:
+    - name: notify-any-failure
+      when:
+        - input: $(tasks.status)
+          operator: in
+          values: ["Failed"]
+      taskRef:
+        name: send-to-slack-channel
+      params:
+        - name: webhook-secret
+          value: slack
+        - name: message
+          value: "Hello from Tekton!"
+        - name: icon-emoji
+          value: ':Failed:' 
   params:
     # The variable with brackets are special to Pipelines as Code
     # They will automatically be expanded with the events from Github.
@@ -69,22 +84,7 @@ spec:
               image: registry.access.redhat.com/ubi9/ubi-micro
               workingDir: $(workspaces.source.path)
               script: |
-                exit 0
-#     finally:
-#       - name: notify-any-failure
-#         when:
-#           - input: $(tasks.status)
-#             operator: in
-#             values: ["Failed"]
-#         taskRef:
-#           name: send-to-slack-channel
-#         params:
-#           - name: webhook-secret
-#             value: slack
-#           - name: message
-#             value: "Hello from Tekton!"
-#           - name: icon-emoji
-#             value: ':Failed:'   
+                exit 0  
   workspaces:
   - name: source
     volumeClaimTemplate:
