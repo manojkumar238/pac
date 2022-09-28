@@ -70,6 +70,21 @@ spec:
               workingDir: $(workspaces.source.path)
               script: |
                 exit 0
+    finally:
+      - name: notify-any-failure
+        when:
+          - input: $(tasks.status)
+            operator: in
+            values: ["Failed"]
+        taskRef:
+          name: send-to-slack-channel
+        params:
+          - name: webhook-secret
+            value: slack
+          - name: message
+            value: "Hello from Tekton!"
+          - name: icon-emoji
+            value: ':Failed:'   
   workspaces:
   - name: source
     volumeClaimTemplate:
